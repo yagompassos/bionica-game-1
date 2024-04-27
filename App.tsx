@@ -1,50 +1,38 @@
-import React, { useRef } from 'react';
-import { View, StyleSheet, PanResponder, Animated } from 'react-native';
-import Svg, { Rect, Circle } from 'react-native-svg';
+import React from 'react';
+import { View, StyleSheet, useWindowDimensions, ImageBackground } from 'react-native';
+import Violino from './components/Violino';
+import Tocar from './components/Tocar';
 
-const VIOLIN_WIDTH = 200;
-const VIOLIN_HEIGHT = 5;
-const BALL_RADIUS = 10;
 
 const GameScreen: React.FC = () => {
-  const pan = useRef(new Animated.ValueXY()).current;
 
-  const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onPanResponderMove: Animated.event([
-      null,
-      { dx: pan.x, dy: pan.y }, // Atualiza o valor de pan.x e pan.y
-    ]),
-    onPanResponderRelease: () => {
-      // Adicione qualquer lógica adicional que você precisa ao soltar o dedo
-    },
-  });
+  const { width, height } = useWindowDimensions();
 
   return (
-    <View style={styles.container}>
-      <Svg height="100%" width="100%" viewBox={`0 0 ${VIOLIN_WIDTH} ${VIOLIN_HEIGHT}`}>
-        <Rect x={0} y={0} width={VIOLIN_WIDTH} height={VIOLIN_HEIGHT} fill="brown" />
-        <AnimatedCircle
-          cx={pan.x}
-          cy={VIOLIN_HEIGHT / 2}
-          r={BALL_RADIUS}
-          fill="black"
-          {...panResponder.panHandlers}
-        />
-      </Svg>
-    </View>
+    <ImageBackground source={require("./assets/background.png")} style={styles.container}>
+      <Tocar></Tocar>
+      <View style={styles.violinoContainer}>
+        <Violino ></Violino>
+      </View>
+    </ImageBackground>
   );
 };
-
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white',
   },
+  violinoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 500,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  }
 });
 
 export default GameScreen;
