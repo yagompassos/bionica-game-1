@@ -1,11 +1,11 @@
-import React, { useRef } from "react"
-import { Animated, PanResponder } from "react-native";
+import React, { RefObject, useRef } from "react"
+import { Animated, PanResponder, View } from "react-native";
 import { Circle } from "react-native-svg";
 import { BALL_RADIUS, VIOLIN_HEIGHT } from "../config/utils";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-const Palheta = () => {
+const Palheta = ({ ref }: { ref: RefObject<View> }) => {
     const pan = useRef(new Animated.ValueXY()).current;
 
     const panResponder = PanResponder.create({
@@ -19,11 +19,12 @@ const Palheta = () => {
         },
     });
 
-    return (<AnimatedCircle
+    return (<Animated.View
         cx={pan.x}
         cy={VIOLIN_HEIGHT / 2}
         r={BALL_RADIUS}
         fill="white"
+        ref={ref}
         {...panResponder.panHandlers}
     />)
 }

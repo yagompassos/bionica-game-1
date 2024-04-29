@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { RefObject, useEffect, useState } from 'react';
 import { View, Animated } from 'react-native';
 import Nota from './Nota';
 import { DELAY_QUEDA, HEIGHT, QUANT_NOTAS, TEMPO_QUEDA, WIDTH } from '../config/utils';
 import INota from '../interface/INota';
 
-const Melodia = () => {
+const Melodia = ({ ref }: { ref: RefObject<View> }) => {
     const [notas, setNotas] = useState<INota[]>([]);
 
     useEffect(() => {
@@ -31,7 +31,7 @@ const Melodia = () => {
 
     const renderNotas = () => {
         return notas.map((nota) => (
-            <Nota key={nota.id} Y={nota.posicaoY} X={nota.posicaoX} />
+            <Nota ref={ref} key={nota.id} Y={nota.posicaoY} X={nota.posicaoX} />
         ));
     };
 

@@ -1,9 +1,9 @@
-import React from 'react';
-import { Animated, StyleSheet } from 'react-native';
+import React, { RefObject } from 'react';
+import { Animated, StyleSheet, View } from 'react-native';
 
-const Nota = ({ Y, X }: { Y: Animated.Value, X: Animated.Value }) => {
+const Nota = ({ ref, Y, X }: { ref: RefObject<View>, Y: Animated.Value, X: Animated.Value }) => {
     return <Animated.View
-        style={[styles.nota, { transform: [{ translateY: Y }, { translateX: X }] }]}
+        ref={ref} style={[styles.nota, { transform: [{ translateY: Y }, { translateX: X }] }]}
     />
 };
 
