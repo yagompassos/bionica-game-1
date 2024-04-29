@@ -9,20 +9,21 @@ const GameScreen: React.FC = () => {
   const violinoRef = useRef<View>(null);
 
   const verificarColisao = () => {
-    if (!melodiaRef.current || !violinoRef.current) return;
+    if (!melodiaRef.current || !violinoRef.current) 
+      return;
 
     melodiaRef.current.measure((x, y, width, height, pageX, pageY) => {
-      const melodiaRect = { left: pageX, right: pageX + width, top: pageY, bottom: pageY + height };
+    const melodiaRect = { left: pageX, right: pageX + width, top: pageY, bottom: pageY + height };
 
-      violinoRef.current.measure((x, y, width, height, pageX, pageY) => {
-        const violinoRect = { left: pageX, right: pageX + width, top: pageY, bottom: pageY + height };
+    violinoRef.current.measure((x, y, width, height, pageX, pageY) => {
+    const violinoRect = { left: pageX, right: pageX + width, top: pageY, bottom: pageY + height };
 
-        if (
+    if (
           melodiaRect.left < violinoRect.right &&
           melodiaRect.right > violinoRect.left &&
           melodiaRect.top < violinoRect.bottom &&
           melodiaRect.bottom > violinoRect.top
-        ) {
+       ) {
           let newScore = score + 1;
           setScore(newScore);
         }
