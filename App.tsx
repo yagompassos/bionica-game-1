@@ -1,28 +1,24 @@
 import React from 'react';
-import { View, StyleSheet, useWindowDimensions, ImageBackground } from 'react-native';
+import { View, StyleSheet, ImageBackground } from 'react-native';
 import Violino from './components/Violino';
-import Tocar from './components/Tocar';
+import Melodia from './components/Melodia';
 
 
 const GameScreen: React.FC = () => {
 
-  const { width, height } = useWindowDimensions();
-
   return (
-    <ImageBackground source={require("./assets/background.png")} style={styles.container}>
-      <Tocar></Tocar>
+    < ImageBackground source={require("./assets/background.png")} style={styles.container} >
+      <Melodia></Melodia>
       <View style={styles.violinoContainer}>
         <Violino ></Violino>
       </View>
-    </ImageBackground>
+    </ImageBackground >
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   violinoContainer: {
     alignItems: 'center',
