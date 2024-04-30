@@ -11,7 +11,7 @@ const Melodia = ({ ref }: { ref: RefObject<View> }) => {
         const novasNotas: INota[] = Array.from({ length: QUANT_NOTAS }, (_, index) => {
             return {
                 id: index.toString(),
-                posicaoY: new Animated.Value(Math.random() * (HEIGHT - 100) - HEIGHT),
+                posicaoY: new Animated.Value(Math.random() * (HEIGHT - 100) - (HEIGHT + 100)),
                 posicaoX: new Animated.Value(Math.random() * (WIDTH - 100)),
             };
         });

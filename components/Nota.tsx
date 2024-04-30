@@ -10,10 +10,12 @@ const Nota = ({ ref, Y, X }: { ref: RefObject<View>, Y: Animated.Value, X: Anima
 const styles = StyleSheet.create({
     nota: {
         position: 'absolute',
-        width: 50,
-        height: 50,
-        backgroundColor: 'black',
+        width: 10,
+        height: 150,
+        backgroundColor: 'pink',
         borderRadius: 5,
+        borderWidth: 3,
+        borderColor: 'white',
     },
 });
 

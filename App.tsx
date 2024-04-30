@@ -2,37 +2,40 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, StyleSheet, ImageBackground, Text } from 'react-native';
 import Violino from './components/Violino';
 import Melodia from './components/Melodia';
+import { Circle } from 'react-native-svg';
 
 const GameScreen: React.FC = () => {
   const [score, setScore] = useState(0);
   const melodiaRef = useRef<View>(null);
-  const violinoRef = useRef<View>(null);
+  const violinoRef = useRef<Circle>(null);
 
-  const verificarColisao = () => {
-    if (!melodiaRef.current || !violinoRef.current) 
-      return;
+  const checkCollision = () => {
+    console.log(violinoRef.current);
+    if (melodiaRef.current && violinoRef.current) {
+      let melodiaLayout = { x: 0, y: 0, width: 0, height: 0 };
 
-    melodiaRef.current.measure((x, y, width, height, pageX, pageY) => {
-    const melodiaRect = { left: pageX, right: pageX + width, top: pageY, bottom: pageY + height };
-
-    violinoRef.current.measure((x, y, width, height, pageX, pageY) => {
-    const violinoRect = { left: pageX, right: pageX + width, top: pageY, bottom: pageY + height };
-
-    if (
-          melodiaRect.left < violinoRect.right &&
-          melodiaRect.right > violinoRect.left &&
-          melodiaRect.top < violinoRect.bottom &&
-          melodiaRect.bottom > violinoRect.top
-       ) {
-          let newScore = score + 1;
-          setScore(newScore);
-        }
+      melodiaRef.current.measure((x, y, width, height, pageX, pageY) => {
+        melodiaLayout = { x: pageX, y: pageY, width, height };
       });
-    });
-  };
+
+      let violinLen = violinoRef.current.getBBox();
+      console.log(violinLen);
+      if (
+        melodiaLayout.x < violinLen!.x + violinLen!.width &&
+        melodiaLayout.x + melodiaLayout.width > violinLen!.x &&
+        melodiaLayout.y < violinLen!.y + violinLen!.height &&
+        melodiaLayout.y + melodiaLayout.height > violinLen!.y
+      ) {
+        setScore(score + 1);
+
+      }
+    };
+  }
+
 
   useEffect(() => {
-    verificarColisao();
+    const interval = setInterval(checkCollision, 100); // Check collision every 100ms
+    return () => clearInterval(interval);
   }, []);
 
   return (
