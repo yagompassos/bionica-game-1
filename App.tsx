@@ -1,48 +1,49 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ImageBackground, Text } from 'react-native';
+import * as Matter from 'matter-js';
 import Violino from './components/Violino';
 import Melodia from './components/Melodia';
-import { Circle } from 'react-native-svg';
+
+const engine = Matter.Engine.create();
+const world = engine.world;
 
 const GameScreen: React.FC = () => {
   const [score, setScore] = useState(0);
-  const melodiaRef = useRef<View>(null);
-  const violinoRef = useRef<Circle>(null);
-
-  const checkCollision = () => {
-    console.log(violinoRef.current);
-    if (melodiaRef.current && violinoRef.current) {
-      let melodiaLayout = { x: 0, y: 0, width: 0, height: 0 };
-
-      melodiaRef.current.measure((x, y, width, height, pageX, pageY) => {
-        melodiaLayout = { x: pageX, y: pageY, width, height };
-      });
-
-      let violinLen = violinoRef.current.getBBox();
-      console.log(violinLen);
-      if (
-        melodiaLayout.x < violinLen!.x + violinLen!.width &&
-        melodiaLayout.x + melodiaLayout.width > violinLen!.x &&
-        melodiaLayout.y < violinLen!.y + violinLen!.height &&
-        melodiaLayout.y + melodiaLayout.height > violinLen!.y
-      ) {
-        setScore(score + 1);
-
-      }
-    };
-  }
-
 
   useEffect(() => {
-    const interval = setInterval(checkCollision, 100); // Check collision every 100ms
-    return () => clearInterval(interval);
+    // Corpo da Melodia
+    const melodiaBody = Matter.Bodies.rectangle(50, 50, 50, 50, { isStatic: true });
+    melodiaBody.label = 'melodia';
+    Matter.World.add(world, melodiaBody);
+    // Corpo do Violino
+    const violinoBody = Matter.Bodies.rectangle(150, 150, 50, 50, { isStatic: true });
+    violinoBody.label = 'violino';
+    Matter.World.add(world, violinoBody);
+
+    // Escuta eventos de colisão entre os corpos
+    Matter.Events.on(engine, 'collisionStart', event => {
+      event.pairs.forEach(pair => {
+        const bodyA = pair.bodyA;
+        const bodyB = pair.bodyB;
+
+        if ((bodyA.label === 'melodia' && bodyB.label === 'violino') ||
+          (bodyA.label === 'violino' && bodyB.label === 'melodia')) {
+          setScore(score + 1); // Incrementa o score quando há colisão entre Melodia e Violino
+        }
+      });
+    });
+
+    return () => {
+      Matter.World.remove(world, melodiaBody);
+      Matter.World.remove(world, violinoBody);
+    };
   }, []);
 
   return (
     <ImageBackground source={require("./assets/background.png")} style={styles.container}>
-      <Melodia ref={melodiaRef} />
+      <Melodia world={world} />
       <View style={styles.violinoContainer}>
-        <Violino ref={violinoRef} />
+        <Violino world={world} />
       </View>
       <Text style={styles.score}>Score: {score}</Text>
     </ImageBackground>

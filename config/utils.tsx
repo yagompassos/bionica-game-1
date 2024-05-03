@@ -12,4 +12,4 @@ export const BALL_RADIUS = 10;
 // devemos encontrar um tempo próximo que seja ótimo
 export const TEMPO_QUEDA = 5000;
 export const DELAY_QUEDA = 6000;
-export const QUANT_NOTAS = 1000;
+export const QUANT_NOTAS = 20;

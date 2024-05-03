@@ -1,10 +1,24 @@
-import React, { RefObject } from 'react';
-import { Animated, StyleSheet, View } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, StyleSheet } from 'react-native';
+import * as Matter from 'matter-js';
 
-const Nota = ({ ref, Y, X }: { ref: RefObject<View>, Y: Animated.Value, X: Animated.Value }) => {
-    return <Animated.View
-        ref={ref} style={[styles.nota, { transform: [{ translateY: Y }, { translateX: X }] }]}
-    />
+const Nota = ({ world, body }: { world: Matter.World, body: Matter.Body }) => {
+    const viewRef = useRef<View>(null);
+
+    useEffect(() => {
+        const updatePosition = () => {
+            if (viewRef.current && body) {
+                const position = body.position;
+                viewRef.current.setNativeProps({ style: [{ top: position.y, left: position.x }] });
+            }
+        };
+
+        const interval = setInterval(updatePosition, 1000 / 60); // Atualiza a posição a cada frame
+
+        return () => clearInterval(interval);
+    }, [body]);
+
+    return <View ref={viewRef} style={styles.nota} />;
 };
 
 const styles = StyleSheet.create({

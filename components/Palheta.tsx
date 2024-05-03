@@ -1,38 +1,31 @@
-import React, { RefObject, useRef } from "react"
-import { Animated, PanResponder } from "react-native";
-import { Circle } from "react-native-svg";
-import { BALL_RADIUS, VIOLIN_HEIGHT } from "../config/utils";
+import React, { useEffect, useRef } from 'react';
+import { Circle } from 'react-native-svg';
+import * as Matter from 'matter-js';
+import { BALL_RADIUS, VIOLIN_HEIGHT } from '../config/utils';
 
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+const Palheta = ({ world }: { world: Matter.World }) => {
+    const circleRef = useRef<Circle>(null);
 
-const Palheta = ({ ref }: { ref: RefObject<Circle> }) => {
-    const pan = useRef(new Animated.ValueXY()).current;
+    useEffect(() => {
+        const body = Matter.Bodies.circle(100, VIOLIN_HEIGHT / 2, BALL_RADIUS, { isStatic: true });
+        Matter.World.add(world, [body]);
 
-    const panResponder = PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onPanResponderMove: (evt, gestureState) => {
-            if (gestureState.dx !== 0)
-                pan.setValue({ x: Math.min(Math.max((gestureState.x0 + gestureState.dx) / 2, 10), 190), y: gestureState.dy });
-        },
-        onPanResponderRelease: () => {
-            console.log(pan.x);
-        },
-    });
+        const updatePosition = () => {
+            if (circleRef.current) {
+                const position = body.position;
+                circleRef.current.setNativeProps({ cx: position.x, cy: position.y });
+            }
+        };
 
-    return (<AnimatedCircle
-        cx={pan.x}
-        cy={VIOLIN_HEIGHT / 2}
-        r={BALL_RADIUS}
-        fill="white"
-        ref={ref}
-        {...panResponder.panHandlers}
-    />)
-}
+        const interval = setInterval(updatePosition, 1000 / 60); // Atualiza a posição a cada frame
+
+        return () => {
+            clearInterval(interval);
+            Matter.World.remove(world, body);
+        };
+    }, []);
+
+    return <Circle ref={circleRef} cx={100} cy={VIOLIN_HEIGHT / 2} r={BALL_RADIUS} fill="white" />;
+};
 
 export default Palheta;
-
-
-// cx={pan.x}
-// cy={VIOLIN_HEIGHT / 2}
-// r={BALL_RADIUS}
-// fill="white"
